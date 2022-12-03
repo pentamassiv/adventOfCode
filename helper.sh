@@ -32,7 +32,9 @@ fi
 if [ "$mode" == "submit" ] && [[ $# == 5 ]]; then
     level="$4"
     answer="$5"
-    curl -X POST -b secret_session_cookie -F 'level=$level' -F 'answer=$answer' https://adventofcode.com/20$year/day/$day/answer
+    #echo "Would have sent:"
+    echo "curl -X POST -b secret_session_cookie -H 'Content-Type: application/x-www-form-urlencoded' --data-raw 'level=$level&answer=$answer' https://adventofcode.com/20$year/day/$day/answer"
+    curl -X POST -b secret_session_cookie -H 'Content-Type: application/x-www-form-urlencoded' --data-raw 'level=$level&answer=$answer' https://adventofcode.com/20$year/day/$day/answer
     exit 0
 fi
 
