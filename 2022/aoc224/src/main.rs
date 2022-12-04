@@ -9,16 +9,17 @@ fn main() {
 
     let mut count = 0;
     // Iterator over the lines
-    for line in lines.flatten() {
-        let line = line
-            .splitn(4, |c| c == '-' || c == ',')
+    lines.flatten().for_each(|line| {
+        line.splitn(4, |c| c == '-' || c == ',')
             .map(|x| x.parse::<i32>().unwrap())
             .array_chunks::<4>()
             .filter(|[start_a, end_a, start_b, end_b]| {
                 start_a == start_b || end_a == end_b || start_a.cmp(start_b) != end_a.cmp(end_b)
             })
-            .count();
-        count += line;
-    }
+            .for_each(|_| {
+                count += 1;
+            })
+    });
+
     println!("{count}");
 }
