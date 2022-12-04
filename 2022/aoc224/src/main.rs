@@ -1,3 +1,5 @@
+#![feature(iter_array_chunks)]
+
 use std::fs::File;
 use std::io::{self, BufRead};
 
@@ -8,12 +10,15 @@ fn main() {
     let mut count = 0;
     // Iterator over the lines
     for line in lines.flatten() {
-        let line: Vec<&str> = line.split_terminator(&['-', ',']).take(4).collect();
-        let mut line = vec![(1, line[0]), (1, line[1]), (2, line[2]), (2, line[3])];
-        line.sort_by_key(|(_, value)| value.parse::<i32>().unwrap());
-        if line[0].0 == line[3].0 {
-            count += 1;
-        }
+        let line = line
+            .splitn(4, |c| c == '-' || c == ',')
+            .map(|x| x.parse::<i32>().unwrap())
+            .array_chunks::<4>()
+            .filter(|[start_a, end_a, start_b, end_b]| {
+                start_a == start_b || end_a == end_b || start_a.cmp(start_b) != end_a.cmp(end_b)
+            })
+            .count();
+        count += line;
     }
     println!("{count}");
 }
