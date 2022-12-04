@@ -32,9 +32,7 @@ fi
 if [ "$mode" == "submit" ] && [[ $# == 5 ]]; then
     level="$4"
     answer="$5"
-    #echo "Sent:"
-    echo "curl -X POST -b secret_session_cookie --data-raw 'level='$level'&answer='$answer https://adventofcode.com/20$year/day/$day/answer"
-    curl -X POST -b secret_session_cookie --data-raw 'level='$level'&answer='$answer https://adventofcode.com/20$year/day/$day/answer
+    curl -X POST -b secret_session_cookie --data-raw 'level='$level'&answer='$answer --silent https://adventofcode.com/20$year/day/$day/answer 2>&1 | grep -A2 '<main>'
     exit 0
 fi
 
