@@ -1,5 +1,5 @@
 #![feature(iter_array_chunks)]
-
+#![warn(clippy::pedantic)]
 fn main() {
     // Read the input file
     let input = std::fs::read_to_string("2022/aoc224/input").unwrap();
@@ -23,7 +23,7 @@ fn main() {
             .filter(|[start_a, end_a, start_b, end_b]| start_a.cmp(start_b) != end_a.cmp(end_b))
             .for_each(|_| {
                 complete_overlaps += 1;
-            })
+            });
     });
 
     println!("{complete_overlaps}");

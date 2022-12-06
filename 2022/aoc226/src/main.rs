@@ -1,5 +1,6 @@
 #![feature(iter_array_chunks)]
-
+#![warn(clippy::pedantic)]
+//#![allow(cargo_common_metadata)]
 fn main() {
     // Read the input file
     let input = std::fs::read_to_string("2022/aoc226/input").unwrap();

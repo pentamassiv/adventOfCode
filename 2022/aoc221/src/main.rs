@@ -1,3 +1,4 @@
+#![warn(clippy::pedantic)]
 fn main() {
     // Read the input file
     let mut calories: Vec<i32> = std::fs::read_to_string("2022/aoc221/input")
@@ -5,7 +6,7 @@ fn main() {
         .split("\n\n")
         .map(calculate_calories_of_one_elf)
         .collect();
-    calories.sort();
+    calories.sort_unstable();
 
     println!("Part 1:");
     println!("{}", calories.iter().rev().take(1).sum::<i32>());

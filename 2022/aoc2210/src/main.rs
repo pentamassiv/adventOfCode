@@ -1,3 +1,4 @@
+#![warn(clippy::pedantic)]
 fn main() {
     // Read the input file
     let input = std::fs::read_to_string("2022/aoc2210/input").unwrap();

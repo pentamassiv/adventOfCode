@@ -1,5 +1,5 @@
 #![feature(drain_filter)]
-
+#![warn(clippy::pedantic)]
 fn main() {
     // Read the input file
     let input = std::fs::read_to_string("2022/aoc223/input").unwrap();

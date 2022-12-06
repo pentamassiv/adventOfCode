@@ -1,5 +1,4 @@
 #[allow(clippy::identity_op)]
-
 fn main() {
     // Read the input file
     let input = std::fs::read_to_string("2022/aoc222/input").unwrap();

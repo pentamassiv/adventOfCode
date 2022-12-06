@@ -1,3 +1,5 @@
+#![warn(clippy::pedantic)]
+
 use std::collections::VecDeque;
 use std::fs::File;
 use std::io::{self, BufRead};
@@ -13,7 +15,7 @@ fn main() {
         .peekable();
 
     let mut stacks = vec![];
-    for _ in 0..lines.peek().unwrap().len() / 4 + 1 {
+    for _ in 0..=lines.peek().unwrap().len() / 4 {
         stacks.push(VecDeque::new());
     }
 
@@ -78,27 +80,27 @@ fn main() {
                             stack
                                 .get(row.wrapping_sub(stack_max_len - stack.len()))
                                 .unwrap()
-                        )
+                        );
                     } else {
-                        print!("    ")
+                        print!("    ");
                     }
                 }
-                println!()
+                println!();
             }
 
             for no in 0..stacks.len() {
-                print!(" {no}  ")
+                print!(" {no}  ");
             }
             println!();
-            println!()
+            println!();
         }
     }
     for stack in stacks {
-        print!("{}", stack.front().unwrap())
+        print!("{}", stack.front().unwrap());
     }
     println!();
     for stack in stacks_part2 {
-        print!("{}", stack.front().unwrap())
+        print!("{}", stack.front().unwrap());
     }
     println!();
 }
