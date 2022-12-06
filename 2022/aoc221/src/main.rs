@@ -10,17 +10,14 @@ fn main() {
     calories.sort();
 
     println!("Part 1:");
-    println!("{}", calories[calories.len() - 1]);
+    println!("{}", calories.iter().rev().take(1).sum::<i32>());
     println!("Part 2:");
-    println!(
-        "{}",
-        calories[calories.len() - 1] + calories[calories.len() - 2] + calories[calories.len() - 3]
-    );
+    println!("{}", calories.iter().rev().take(3).sum::<i32>());
 }
 
 fn calculate_calories_of_one_elf(lines_of_one_elf: &str) -> i32 {
     lines_of_one_elf
-        .split('\n')
+        .lines()
         .filter_map(|str| str.parse::<i32>().ok())
         .sum()
 }

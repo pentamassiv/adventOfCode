@@ -25,6 +25,8 @@ fn main() {
             &_ => (score.0 + 0, score.1 + 0),
         }
     }
+    println!("Part 1:");
     println!("{}", score.0);
+    println!("Part 2:");
     println!("{}", score.1);
 }
