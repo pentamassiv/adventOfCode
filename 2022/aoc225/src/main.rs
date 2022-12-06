@@ -6,6 +6,7 @@ fn main() {
     let debug = false; // Activate debug print statements
 
     // Read the input file
+
     let mut lines = io::BufReader::new(File::open("2022/aoc225/input").unwrap())
         .lines()
         .flatten()

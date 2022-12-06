@@ -1,12 +1,9 @@
-use std::fs::File;
-use std::io::{self, BufRead};
-
 fn main() {
     // Read the input file
-    let lines = io::BufReader::new(File::open("2022/aoc2215/input").unwrap()).lines();
+    let input = std::fs::read_to_string("2022/aoc2215/input").unwrap();
 
     // Iterator over the lines
-    for line in lines.flatten() {
-        println!("{}", line);
+    for line in input.lines() {
+        println!("{line}");
     }
 }

@@ -1,8 +1,6 @@
-use std::fs;
-
 fn main() {
     // Read the input file
-    let mut calories: Vec<i32> = fs::read_to_string("2022/aoc221/input")
+    let mut calories: Vec<i32> = std::fs::read_to_string("2022/aoc221/input")
         .unwrap()
         .split("\n\n")
         .map(calculate_calories_of_one_elf)

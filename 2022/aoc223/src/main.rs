@@ -1,18 +1,15 @@
 #![feature(drain_filter)]
 
-use std::fs::File;
-use std::io::{self, BufRead};
-
 fn main() {
     // Read the input file
-    let lines = io::BufReader::new(File::open("2022/aoc223/input").unwrap()).lines();
+    let input = std::fs::read_to_string("2022/aoc223/input").unwrap();
 
     let mut compartments;
     let mut sum_prio = 0;
     let mut sum_badge = 0;
     let mut badge_candidates = vec![];
     // Iterator over the lines
-    for (no, rucksack) in lines.flatten().enumerate() {
+    for (no, rucksack) in input.lines().enumerate() {
         compartments = rucksack.split_at(rucksack.len() / 2);
         if no % 3 == 0 {
             for item_type in rucksack.chars() {

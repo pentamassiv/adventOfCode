@@ -1,16 +1,13 @@
 #![feature(iter_array_chunks)]
 
-use std::fs::File;
-use std::io::{self, BufRead};
-
 fn main() {
     // Read the input file
-    let lines = io::BufReader::new(File::open("2022/aoc224/input").unwrap()).lines();
+    let input = std::fs::read_to_string("2022/aoc224/input").unwrap();
 
     let mut complete_overlaps = 0;
     let mut partial_overlaps = 0;
     // Iterator over the lines
-    lines.flatten().for_each(|line| {
+    input.lines().for_each(|line| {
         line.splitn(4, |c| c == '-' || c == ',')
             .map(|x| x.parse::<i32>().unwrap())
             .array_chunks::<4>()
