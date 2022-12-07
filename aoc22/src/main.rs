@@ -8,9 +8,8 @@ mod day4;
 mod day5;
 mod day6;
 mod day7;
-
-/*mod day8;
-mod day5;
+mod day8;
+/*mod day9;
 mod day10;
 mod day11;
 mod day12;
@@ -65,9 +64,14 @@ fn main() {
     println!("  {part1}");
     println!("  {part2}");
 
-    /*
     println!("Day 8:");
     let (part1, part2) = day8::run("aoc22/input/8.txt");
+    println!("  {part1}");
+    println!("  {part2}");
+
+    /*
+    println!("Day 9:");
+    let (part1, part2) = day9::run("aoc22/input/9.txt");
     println!("  {part1}");
     println!("  {part2}");
     */

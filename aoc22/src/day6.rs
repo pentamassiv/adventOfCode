@@ -1,30 +1,21 @@
+use std::collections::HashSet;
+
 pub fn run(path: &str) -> (usize, usize) {
     // Read the input file
     let input = std::fs::read_to_string(path).unwrap();
 
-    let mut solution = (0, 0);
-    solution.0 = find_idx_n_distinct_chars(input.as_bytes(), 4).unwrap_or(input.len() + 1);
-    solution.1 = find_idx_n_distinct_chars(input.as_bytes(), 14).unwrap_or(input.len() + 1);
+    let solution1 = find_marker(input.as_bytes(), 4);
+    let solution2 = find_marker(input.as_bytes(), 14);
 
-    (solution.0, solution.1)
+    (solution1, solution2)
 }
 
-fn find_idx_n_distinct_chars(input: &[u8], n_distinct: usize) -> Option<usize> {
+fn find_marker(input: &[u8], n_distinct: usize) -> usize {
     input
         .windows(n_distinct)
-        .enumerate()
-        .find_map(|(no, ch)| (all_distinct(ch)).then_some(no + n_distinct))
-}
-
-fn all_distinct(slice: &[u8]) -> bool {
-    for (no, char_a) in slice.iter().enumerate() {
-        for char_b in slice.iter().skip(no + 1) {
-            if char_a == char_b {
-                return false;
-            }
-        }
-    }
-    true
+        .position(|x| x.iter().copied().collect::<HashSet<u8>>().len() == n_distinct)
+        .unwrap_or(input.len() + 1)
+        + n_distinct
 }
 
 #[cfg(test)]
