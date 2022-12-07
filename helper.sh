@@ -25,7 +25,7 @@ if [[ $# > 2 ]]; then
 fi
 
 if [ "$mode" == "input" ] && [[ $# == 3 ]]; then
-    curl -b secret_session_cookie https://adventofcode.com/20$year/day/$day/input > 20$year/aoc$year$day/input
+    curl -b secret_session_cookie https://adventofcode.com/20$year/day/$day/input > aoc$year/input/$day.txt
     exit 0
 fi
 
