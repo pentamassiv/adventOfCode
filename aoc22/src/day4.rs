@@ -13,7 +13,9 @@ pub fn run(path: &str) -> (i32, i32) {
             .inspect(|_| {
                 partial_overlaps += 1;
             })
-            .filter(|[start_a, end_a, start_b, end_b]| start_a.cmp(start_b) != end_a.cmp(end_b))
+            .filter(|[start_a, end_a, start_b, end_b]| {
+                start_a == start_b || end_a == end_b || start_a.cmp(start_b) != end_a.cmp(end_b)
+            })
             .for_each(|_| {
                 complete_overlaps += 1;
             });
