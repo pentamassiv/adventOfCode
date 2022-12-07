@@ -11,12 +11,7 @@ fn main() {
         line.splitn(4, |c| c == '-' || c == ',')
             .map(|x| x.parse::<i32>().unwrap())
             .array_chunks::<4>()
-            .filter(|[start_a, end_a, start_b, end_b]| {
-                (*start_a..=*end_a).contains(start_b)
-                    || (*start_a..=*end_a).contains(end_b)
-                    || (*start_b..=*end_b).contains(start_a)
-                    || (*start_b..=*end_b).contains(end_a)
-            })
+            .filter(|[start_a, end_a, start_b, end_b]| end_a >= start_b && end_b >= start_a)
             .inspect(|_| {
                 partial_overlaps += 1;
             })
