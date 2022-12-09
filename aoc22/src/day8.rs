@@ -8,6 +8,7 @@ where
     P: AsRef<Path>,
 {
     let input = std::fs::read_to_string(path).unwrap();
+    let input = input.trim();
     let grid_width = input.find('\n').unwrap();
     let input = input.as_bytes();
     let grid_height = input.len() / grid_width;

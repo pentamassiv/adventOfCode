@@ -65,7 +65,6 @@ fn main() {
     println!("  {part2}");
 
     println!("Day 8:");
-    // Had to delete the last line break manually
     let (part1, part2) = day8::run("aoc22/input/8.txt");
     println!("  {part1}");
     println!("  {part2}");
@@ -73,6 +72,11 @@ fn main() {
     /*
     println!("Day 9:");
     let (part1, part2) = day9::run("aoc22/input/9.txt");
+    println!("  {part1}");
+    println!("  {part2}");
+
+    println!("Day 10:");
+    let (part1, part2) = day10::run("aoc22/input/10.txt");
     println!("  {part1}");
     println!("  {part2}");
     */
