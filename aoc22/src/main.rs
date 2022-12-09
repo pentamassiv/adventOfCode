@@ -65,9 +65,11 @@ fn main() {
     println!("  {part2}");
 
     println!("Day 8:");
+    let start = std::time::Instant::now();
     let (part1, part2) = day8::run("aoc22/input/8.txt");
     println!("  {part1}");
     println!("  {part2}");
+    println!("Elapsed: {:.2?}", start.elapsed());
 
     /*
     println!("Day 9:");
