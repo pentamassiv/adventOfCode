@@ -1,10 +1,9 @@
 use std::{
     collections::{HashMap, HashSet},
     path::Path,
-    vec,
 };
 
-pub fn run<P>(path: P) -> (usize, i32)
+pub fn run<P>(path: P) -> (usize, usize)
 where
     P: AsRef<Path>,
 {
@@ -13,101 +12,110 @@ where
     let input = input.as_bytes();
     let grid_height = input.len() / grid_width;
 
-    let mut max_v = vec![0; grid_width];
-    let mut max_h = 0;
-
     let mut visible_trees: HashSet<(usize, usize)> = HashSet::new();
     let mut scenic_scores: HashMap<(usize, usize), usize> = HashMap::new();
-    // insert_border_trees(&mut visible_trees, grid_width, grid_height);
 
     let mut tree;
+
     for row in 0..grid_height {
         for col in 0..grid_width {
             tree = input[row * (grid_width + 1) + col];
-            check_visibility(
-                input,
-                &mut tree,
-                (row, col),
-                &mut max_h,
-                &mut max_v,
-                grid_width,
+            add_scenic_score(
                 &mut visible_trees,
+                &mut scenic_scores,
+                input,
+                tree,
+                row,
+                col,
+                grid_width,
+                row_idx,
+                (0..col).rev(),
+            );
+            add_scenic_score(
+                &mut visible_trees,
+                &mut scenic_scores,
+                input,
+                tree,
+                row,
+                col,
+                grid_width,
+                col_idx,
+                (0..row).rev(),
             );
         }
-        max_h = 0;
     }
-
-    visible_trees.len();
-
-    let mut max_h = 0;
-    let mut max_v = vec![0; grid_width];
 
     for row in (0..grid_height).rev() {
         for col in (0..grid_width).rev() {
             tree = input[row * (grid_width + 1) + col];
-            check_visibility(
-                input,
-                &mut tree,
-                (row, col),
-                &mut max_h,
-                &mut max_v,
-                grid_width,
+            add_scenic_score(
                 &mut visible_trees,
+                &mut scenic_scores,
+                input,
+                tree,
+                row,
+                col,
+                grid_width,
+                row_idx,
+                col + 1..grid_width,
+            );
+            add_scenic_score(
+                &mut visible_trees,
+                &mut scenic_scores,
+                input,
+                tree,
+                row,
+                col,
+                grid_width,
+                col_idx,
+                row + 1..grid_height,
             );
         }
-        max_h = 0;
     }
 
     let solution1 = visible_trees.len();
-    println!("{solution1:?}");
-    (solution1, 0)
+    let solution2 = *scenic_scores.iter().max_by(|x, y| x.1.cmp(y.1)).unwrap().1;
+    (solution1, solution2)
 }
 
-fn check_visibility(
-    input: &[u8],
-    tree: &mut u8,
-    position: (usize, usize),
-    max_h: &mut u8,
-    max_v: &mut [u8],
-    grid_width: usize,
+#[allow(clippy::too_many_arguments)]
+fn add_scenic_score<I: Iterator<Item = usize>>(
     visible_trees: &mut HashSet<(usize, usize)>,
-) {
-    *tree = input[position.0 * (grid_width + 1) + position.1];
-    if *tree > *max_h {
-        visible_trees.insert(position);
-        *max_h = *tree;
-    }
-    if *tree > max_v[position.1] {
-        visible_trees.insert(position);
-        max_v[position.1] = *tree;
-    }
-}
-
-fn add_scenic_score(
     scenic_scores: &mut HashMap<(usize, usize), usize>,
     input: &[u8],
     tree: u8,
     row: usize,
     col: usize,
     grid_width: usize,
-    rev: bool,
+    idx_fn: fn(usize, usize, usize, usize) -> usize,
+    range: I,
 ) {
     let mut viewed_tree;
     let mut view_score = 0;
 
-    for i in (0..col).rev() {
-        viewed_tree = input[row * (grid_width + 1) + col - i];
+    for i in range {
+        viewed_tree = input[idx_fn(row, col, grid_width, i)];
         view_score += 1;
-        if tree >= viewed_tree {
+        if viewed_tree >= tree {
             scenic_scores
                 .entry((col, row))
-                .and_modify(|old_score| *old_score += view_score)
+                .and_modify(|old_score| *old_score *= view_score)
                 .or_insert(view_score);
-            break;
+            return;
         }
     }
+    scenic_scores
+        .entry((col, row))
+        .and_modify(|old_score| *old_score *= view_score)
+        .or_insert(view_score);
+    visible_trees.insert((col, row));
 }
-
+fn row_idx(row: usize, _: usize, grid_width: usize, i: usize) -> usize {
+    row * (grid_width + 1) + i
+}
+fn col_idx(_: usize, col: usize, grid_width: usize, i: usize) -> usize {
+    i * (grid_width + 1) + col
+}
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -116,14 +124,13 @@ mod tests {
     fn test_example() {
         let (part1, part2) = run("input/examples/8/1.txt");
         assert_eq!(part1, 21);
-        //assert_eq!(part2, 0);
+        assert_eq!(part2, 8);
     }
 
     #[test]
     fn test_input() {
         let (part1, part2) = run("input/8.txt");
         assert_eq!(part1, 1679);
-        /* assert_eq!(part2, 213_159);
-         */
+        assert_eq!(part2, 536_625);
     }
 }
