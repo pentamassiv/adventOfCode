@@ -5,7 +5,7 @@ where
     P: AsRef<Path>,
 {
     let input = std::fs::read_to_string(path).unwrap();
-    let visited: HashSet<_> = input
+    let mut visited: HashSet<_> = input
         .chars()
         .scan((0, 0), |(x, y), movement| match movement {
             '<' => Some((*x - 1, *y)),
@@ -15,6 +15,7 @@ where
             _ => Some((*x, *y)),
         })
         .collect();
+    visited.insert((0, 0));
     (visited.len(), 0)
 }
 
@@ -24,14 +25,14 @@ mod tests {
 
     #[test]
     fn test_example() {
-        let (part1, part2) = run("input/examples/8/1.txt");
+        let (part1, part2) = run("input/examples/3/1.txt");
         assert_eq!(part1, 24000);
         assert_eq!(part2, 45000);
     }
 
     #[test]
     fn test_input() {
-        let (part1, part2) = run("input/8.txt");
+        let (part1, part2) = run("input/3.txt");
         assert_eq!(part1, 75_622);
         assert_eq!(part2, 213_159);
     }
