@@ -7,8 +7,7 @@ where
     let input = std::fs::read_to_string(path).unwrap();
 
     for line in input.lines() {}
-    let (solution1, solution2) = (0, 0);
-    (solution1, solution2)
+    (0, 0)
 }
 
 #[cfg(test)]
