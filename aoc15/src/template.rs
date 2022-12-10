@@ -2,10 +2,14 @@ use std::path::Path;
 
 pub fn run<P>(path: P) -> (i32, i32)
 where
-    P: AsRef<Path>,
+    P: AsRef<Path> + std::fmt::Display,
 {
-    let input = std::fs::read_to_string(path).unwrap();
-
+    // Annoying helper to be able to run the tests in regular and debug mode (see https://github.com/rust-lang/rust-analyzer/issues/13208)
+    let input = if let Ok(input) = std::fs::read_to_string(&path) {
+        input
+    } else {
+        std::fs::read_to_string(format!("aoc15/{path}")).unwrap()
+    };
     for line in input.lines() {}
     (0, 0)
 }
