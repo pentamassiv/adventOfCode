@@ -5,14 +5,9 @@ use std::path::Path;
 
 pub fn run<P>(path: P) -> (i32, i32)
 where
-    P: AsRef<Path> + std::fmt::Display,
+    P: AsRef<Path>,
 {
-    // Annoying helper to be able to run the tests in regular and debug mode (see https://github.com/rust-lang/rust-analyzer/issues/13208)
-    let input = if let Ok(input) = std::fs::read_to_string(&path) {
-        input
-    } else {
-        std::fs::read_to_string(format!("aoc22/{path}")).unwrap()
-    };
+    let input = std::fs::read_to_string(path).unwrap();
     let mut cycle_values = vec![0];
     input.lines().for_each(|l| {
         if let Some(no) = l.strip_prefix("addx ") {
