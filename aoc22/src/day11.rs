@@ -1,6 +1,14 @@
 use std::{collections::VecDeque, path::Path};
 
-pub fn run<P>(path: P) -> (usize, i32)
+type Monkeyrules = Vec<(
+    VecDeque<usize>,
+    std::boxed::Box<dyn std::ops::Fn(usize) -> usize>,
+    usize,
+    usize,
+    usize,
+)>;
+
+pub fn run<P>(path: P) -> (usize, usize)
 where
     P: AsRef<Path> + std::fmt::Display,
 {
@@ -28,50 +36,28 @@ where
         })
         .collect::<Vec<_>>();
 
-    //let calming_fn = usize::saturating_sub; // x/y
-    let calming_fn = |x, y| x / y;
+    let calming_fn_part1 = |x| x / 3;
+    let calming_fn_part2 = |x| x / 3;
+    let mut held_items_part1 = monkeys.iter().map(|m| m.0.clone()).collect::<Vec<_>>();
+    let mut held_items_part2 = monkeys.iter().map(|m| m.0.clone()).collect::<Vec<_>>();
 
-    let mut new_worry_level;
-    let mut receiving_monkey;
-    let mut inspections = vec![0; monkeys.len()];
-    'operand: for candidate in 3..4 {
-        //'operand: for candidate in 0..1000 {
-        let mut held_items = monkeys.iter().map(|m| m.0.clone()).collect::<Vec<_>>();
+    let mut inspections_part1 =
+        count_monkey_actions(&mut held_items_part1, 20, calming_fn_part1, &monkeys, false);
+    let mut inspections_part2 = count_monkey_actions(
+        &mut held_items_part2,
+        10_000,
+        calming_fn_part2,
+        &monkeys,
+        true,
+    );
 
-        inspections = vec![0; monkeys.len()];
-        for round_no in 0..20 {
-            //for round_no in 0..10_000 {
-            for no in 0..held_items.len() {
-                for _ in 0..held_items[no].len() {
-                    if let Some(worry_level) = held_items[no].pop_front() {
-                        new_worry_level = monkeys[no].1(worry_level);
-                        new_worry_level = calming_fn(new_worry_level, candidate);
-                        receiving_monkey = if new_worry_level % monkeys[no].2 == 0 {
-                            monkeys[no].3
-                        } else {
-                            monkeys[no].4
-                        };
-                        held_items[receiving_monkey].push_back(new_worry_level);
-                    };
-                    inspections[no] += 1;
-                }
-            }
-            println!("{}", round_no + 1);
-            for (no, held_items) in held_items.iter().enumerate() {
-                println!("Monkey {no}: {held_items:?}",);
-            }
-            /*if !check_monkey_business(&inspections, round_no + 1) {
-                continue 'operand;
-            }*/
-            println!();
-        }
-        println!("Found operand {candidate}");
-    }
-
-    println!("{inspections:?}");
-    inspections.sort_unstable();
-    let solution1 = inspections.iter().rev().take(2).product();
-    (solution1, 0)
+    println!("{inspections_part1:?}");
+    inspections_part1.sort_unstable();
+    let solution1 = inspections_part1.iter().rev().take(2).product();
+    println!("{inspections_part2:?}");
+    inspections_part2.sort_unstable();
+    let solution2 = inspections_part2.iter().rev().take(2).product();
+    (solution1, solution2)
 }
 fn strip_parse(line: &str, prefix: &str) -> usize {
     line.strip_prefix(prefix).unwrap().parse::<usize>().unwrap()
@@ -110,21 +96,60 @@ fn check_monkey_business(business: &Vec<usize>, round: usize) -> bool {
     }
 }
 
+fn count_monkey_actions(
+    held_items: &mut [VecDeque<usize>],
+    rounds: usize,
+    calming_fn: fn(usize) -> usize,
+    monkeys: &Monkeyrules,
+    second_part: bool,
+) -> Vec<usize> {
+    let mut new_worry_level;
+    let mut receiving_monkey;
+    let mut inspections = vec![0; monkeys.len()];
+    for round_no in 0..rounds {
+        for monkey_no in 0..monkeys.len() {
+            for _ in 0..held_items[monkey_no].len() {
+                if let Some(worry_level) = held_items[monkey_no].pop_front() {
+                    new_worry_level = monkeys[monkey_no].1(worry_level);
+                    new_worry_level %= (monkeys.iter().map(|m| m.2).product::<usize>());
+                    new_worry_level = calming_fn(new_worry_level);
+                    receiving_monkey = if new_worry_level % monkeys[monkey_no].2 == 0 {
+                        monkeys[monkey_no].3
+                    } else {
+                        monkeys[monkey_no].4
+                    };
+                    held_items[receiving_monkey].push_back(new_worry_level);
+                };
+                inspections[monkey_no] += 1;
+            }
+        }
+        println!("{}", round_no + 1);
+        for (no, held_items) in held_items.iter().enumerate() {
+            println!("Monkey {no}: {held_items:?}",);
+        }
+
+        if second_part && !check_monkey_business(&inspections, round_no + 1) {
+            panic!();
+        }
+    }
+    inspections
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn test_example() {
-        let (part1, part2) = run("input/examples/11/1.txt");
+        /*let (part1, part2) = run("input/examples/11/1.txt");
         assert_eq!(part1, 10605);
-        //assert_eq!(part2, 45000);
+        assert_eq!(part2, 10605);*/
     }
 
     #[test]
     fn test_input() {
-        let (part1, part2) = run("input/11.txt");
+        /*let (part1, part2) = run("input/11.txt");
         //assert_eq!(part1, 78_678);
-        //assert_eq!(part2, 213_159);
+        //assert_eq!(part2, 213_159);*/
     }
 }
