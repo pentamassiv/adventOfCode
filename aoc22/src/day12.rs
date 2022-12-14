@@ -1,3 +1,5 @@
+#![allow(clippy::char_lit_as_u8)]
+
 use std::{collections::HashSet, path::Path};
 
 pub fn run<P>(path: P) -> (i32, i32)
@@ -11,8 +13,11 @@ where
         std::fs::read_to_string(format!("aoc22/{path}")).unwrap()
     };
 
-    let height_map = input.lines().map(str::as_bytes).collect::<Vec<_>>();
-    let grid = (height_map[0].len(), height_map.len());
+    let mut height_map: Vec<Vec<u8>> = input
+        .lines()
+        .map(|l| l.as_bytes().to_owned())
+        .collect::<Vec<_>>();
+    let grid_dimensions = (height_map[0].len(), height_map.len());
 
     let mut start = (0, 0);
     let mut goal = (0, 0);
@@ -25,37 +30,48 @@ where
             }
         }
     }
+    height_map[start.1][start.0] = 'a' as u8;
+    height_map[goal.1][goal.0] = 'z' as u8;
 
     let solution1;
     let mut visited_positions: HashSet<(usize, usize)> = HashSet::new();
-    let mut current_positions;
-    let mut next_positions = vec![start];
+    let mut current_positions = HashSet::new();
+    let mut next_positions = HashSet::new();
+    current_positions.insert(start);
     let mut step_no = 1;
+
     'steps: loop {
-        current_positions = next_positions.clone();
-        for i in 0..current_positions.len() {
+        for position in &current_positions {
             if visited_positions.contains(&goal) {
                 solution1 = step_no;
                 break 'steps;
             }
-            next_positions = potential_next_positions(current_positions[i], grid)
+            for new_position in potential_next_positions(*position, grid_dimensions)
                 .iter()
                 .filter(|(x, y)| !visited_positions.contains(&(*x, *y)))
                 .inspect(|(x, y)| {
                     println!("a({x},{y}");
                 })
                 .filter(|(x, y)| {
-                    height_map[*x][*y]
-                        < (height_map[current_positions[i].1][current_positions[i].0] + 1u8)
+                    println!("({x}{y})");
+                    println!("({x}{y})");
+                    println!("({x}{y})");
+                    let height_next_postion = height_map[*y][*x];
+                    let height_current_position = height_map[position.1][position.0];
+                    height_next_postion <= height_current_position + 1
                 })
                 .inspect(|(x, y)| {
                     println!("b({x},{y}");
                 })
-                .copied()
-                .collect::<Vec<_>>();
+            {
+                next_positions.insert(*new_position);
+            }
             for (x, y) in &next_positions {
                 visited_positions.insert((*x, *y));
             }
+        }
+        for next_position in next_positions.drain() {
+            current_positions.insert(next_position);
         }
         step_no += 1;
     }

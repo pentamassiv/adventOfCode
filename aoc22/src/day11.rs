@@ -36,25 +36,20 @@ where
         })
         .collect::<Vec<_>>();
 
+    let modulus: usize = monkeys.iter().map(|m| m.2).product();
+
     let calming_fn_part1 = |x| x / 3;
-    let calming_fn_part2 = |x| x / 3;
+    let calming_fn_part2 = |x| x % modulus;
     let mut held_items_part1 = monkeys.iter().map(|m| m.0.clone()).collect::<Vec<_>>();
     let mut held_items_part2 = monkeys.iter().map(|m| m.0.clone()).collect::<Vec<_>>();
 
     let mut inspections_part1 =
-        count_monkey_actions(&mut held_items_part1, 20, calming_fn_part1, &monkeys, false);
-    let mut inspections_part2 = count_monkey_actions(
-        &mut held_items_part2,
-        10_000,
-        calming_fn_part2,
-        &monkeys,
-        true,
-    );
+        count_monkey_actions(&mut held_items_part1, 20, calming_fn_part1, &monkeys);
+    let mut inspections_part2 =
+        count_monkey_actions(&mut held_items_part2, 10_000, calming_fn_part2, &monkeys);
 
-    println!("{inspections_part1:?}");
     inspections_part1.sort_unstable();
     let solution1 = inspections_part1.iter().rev().take(2).product();
-    println!("{inspections_part2:?}");
     inspections_part2.sort_unstable();
     let solution2 = inspections_part2.iter().rev().take(2).product();
     (solution1, solution2)
@@ -78,40 +73,21 @@ fn parse_operation(line: &str) -> Box<dyn Fn(usize) -> usize> {
     }
 }
 
-fn check_monkey_business(business: &Vec<usize>, round: usize) -> bool {
-    match round {
-        1 => *business == vec![2, 4, 3, 6],
-        20 => *business == vec![99, 97, 8, 103],
-        1000 => *business == vec![5204, 4792, 199, 5192],
-        2000 => *business == vec![10419, 9577, 392, 10391],
-        3000 => *business == vec![15638, 14358, 587, 15593],
-        4000 => *business == vec![20858, 19138, 780, 20797],
-        5000 => *business == vec![26075, 23921, 974, 26000],
-        6000 => *business == vec![31294, 28702, 1165, 31204],
-        7000 => *business == vec![36508, 33488, 1360, 36400],
-        8000 => *business == vec![41728, 38268, 1553, 41606],
-        9000 => *business == vec![46945, 43051, 1746, 46807],
-        10000 => *business == vec![52166, 47830, 1938, 52013],
-        _ => true,
-    }
-}
-
-fn count_monkey_actions(
+fn count_monkey_actions<F: Fn(usize) -> usize>(
     held_items: &mut [VecDeque<usize>],
     rounds: usize,
-    calming_fn: fn(usize) -> usize,
+    calming_fn: F,
     monkeys: &Monkeyrules,
-    second_part: bool,
 ) -> Vec<usize> {
     let mut new_worry_level;
     let mut receiving_monkey;
     let mut inspections = vec![0; monkeys.len()];
-    for round_no in 0..rounds {
+    for _ in 0..rounds {
         for monkey_no in 0..monkeys.len() {
             for _ in 0..held_items[monkey_no].len() {
                 if let Some(worry_level) = held_items[monkey_no].pop_front() {
                     new_worry_level = monkeys[monkey_no].1(worry_level);
-                    new_worry_level %= (monkeys.iter().map(|m| m.2).product::<usize>());
+                    new_worry_level %= monkeys.iter().map(|m| m.2).product::<usize>();
                     new_worry_level = calming_fn(new_worry_level);
                     receiving_monkey = if new_worry_level % monkeys[monkey_no].2 == 0 {
                         monkeys[monkey_no].3
@@ -123,14 +99,6 @@ fn count_monkey_actions(
                 inspections[monkey_no] += 1;
             }
         }
-        println!("{}", round_no + 1);
-        for (no, held_items) in held_items.iter().enumerate() {
-            println!("Monkey {no}: {held_items:?}",);
-        }
-
-        if second_part && !check_monkey_business(&inspections, round_no + 1) {
-            panic!();
-        }
     }
     inspections
 }
@@ -141,15 +109,15 @@ mod tests {
 
     #[test]
     fn test_example() {
-        /*let (part1, part2) = run("input/examples/11/1.txt");
+        let (part1, part2) = run("input/examples/11/1.txt");
         assert_eq!(part1, 10605);
-        assert_eq!(part2, 10605);*/
+        assert_eq!(part2, 2_713_310_158); /**/
     }
 
     #[test]
     fn test_input() {
-        /*let (part1, part2) = run("input/11.txt");
-        //assert_eq!(part1, 78_678);
-        //assert_eq!(part2, 213_159);*/
+        let (part1, part2) = run("input/11.txt");
+        assert_eq!(part1, 78_678);
+        assert_eq!(part2, 15_333_249_714);
     }
 }
