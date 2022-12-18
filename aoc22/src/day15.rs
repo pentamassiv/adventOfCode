@@ -70,7 +70,7 @@ where
     })
 }
 
-pub fn run2<P>(path: P, max_width: i32, max_height: usize) -> usize
+pub fn run2<P>(path: P, max_width: i32, max_height: i32) -> usize
 where
     P: AsRef<Path> + std::fmt::Display,
 {
@@ -88,44 +88,37 @@ where
         .collect::<Vec<_>>();
     // println!("({min}, {max})");
 
-    let mut coverage_map = vec![vec![false; max_width as usize + 1]; max_height + 1];
-    for &(sensor, range, _) in &sensor_beacon {
-        for i in 0..=range {
-            let yu = sensor.1 - i;
-            let yd = sensor.1 + i;
-            if yu >= 0 && yu <= max_height as i32 {
-                for j in 0..=(range - i) {
-                    let xl = sensor.0 - j;
-                    let xr = sensor.0 + j;
-                    if xl >= 0 && xl <= max_width {
-                        coverage_map[yu as usize][xl as usize] = true;
-                    }
-                    if xr >= 0 && xr <= max_width {
-                        coverage_map[yu as usize][xr as usize] = true;
-                    }
-                }
-            }
-            if yd >= 0 && yd <= max_height as i32 {
-                for j in 0..=(range - i) {
-                    let xl = sensor.0 - j;
-                    let xr = sensor.0 + j;
-                    if xl >= 0 && xl <= max_width {
-                        coverage_map[yd as usize][xl as usize] = true;
-                    }
-                    if xr >= 0 && xr <= max_width {
-                        coverage_map[yd as usize][xr as usize] = true;
+    for solution_y in 0..max_height {
+        if solution_y % 10_000 == 0 {
+            println!("{solution_y}");
+        };
+        let mut interesting_row = (vec![false; (max - min).unsigned_abs() as usize], solution_y);
+        sensor_beacon
+            .iter()
+            .filter(|&&((_, y), r, _)| {
+                /*println!("sensor: {x},{y}");
+                println!("range: {r}");
+                println!("filter: {}", r >= (interesting_row.1 - y).abs());*/
+                r >= (interesting_row.1 - y).abs()
+            })
+            .for_each(|&(sensor, range, _)| {
+                for i in 0..=range {
+                    if sensor.1 - i == interesting_row.1 || sensor.1 + i == interesting_row.1 {
+                        for j in 0..=(range - i) {
+                            interesting_row.0[(min.abs() + sensor.0 - j) as usize] = true;
+                            interesting_row.0[(min.abs() + sensor.0 + j) as usize] = true;
+                        }
+                        break;
                     }
                 }
-            }
+            });
+
+        let interesting_part = &interesting_row.0
+            [min.unsigned_abs() as usize..=min.unsigned_abs() as usize + max_width as usize];
+        if let Some(solution_x) = interesting_part.iter().position(|&b| !b) {
+            return solution_x * 4_000_000 + solution_y as usize;
         }
     }
-
-    for (y, row) in coverage_map.iter().enumerate() {
-        if let Some(x) = row.iter().position(|&b| !b) {
-            return y + x * 4_000_000;
-        }
-    }
-
     0
 }
 
