@@ -2,6 +2,8 @@
 
 use std::{collections::HashSet, path::Path};
 
+use colored::*;
+
 pub fn run<P>(path: P) -> (usize, usize)
 where
     P: AsRef<Path> + std::fmt::Display,
@@ -33,8 +35,8 @@ where
     height_map[start.1][start.0] = 'a' as u8;
     height_map[goal.1][goal.0] = 'z' as u8;
 
-    let solution1 = shortest_path(start, goal, &height_map, grid_dimensions, usize::MAX);
-    let mut solution2 = usize::MAX;
+    let (solution1, solution2) = shortest_path(start, goal, &height_map, grid_dimensions);
+    /*let mut solution2 = usize::MAX;
     for y in 0..grid_dimensions.1 {
         for x in 0..grid_dimensions.0 {
             if height_map[y][x] == 'a' as u8 {
@@ -47,7 +49,7 @@ where
                 ));
             }
         }
-    }
+    }*/
 
     (solution1, solution2)
 }
@@ -57,45 +59,70 @@ fn shortest_path(
     goal: (usize, usize),
     height_map: &[Vec<u8>],
     grid_dimensions: (usize, usize),
-    max_steps: usize,
-) -> usize {
-    let result;
+) -> (usize, usize) {
+    let solution1;
+    let mut solution2 = usize::MAX;
     let mut visited_positions: HashSet<(usize, usize)> = HashSet::new();
     let mut current_positions = HashSet::new();
     let mut next_positions = HashSet::new();
-    current_positions.insert(start);
-    let mut step_no = 1;
+    current_positions.insert(goal);
+    visited_positions.insert(goal);
+    let mut step_no = 0;
 
     'steps: loop {
-        for position in &current_positions {
-            if visited_positions.contains(&goal) {
-                result = step_no - 1;
+        for position in current_positions.drain() {
+            if visited_positions.contains(&start) {
+                solution1 = step_no;
                 break 'steps;
             }
-            let potential_next_positions = potential_next_positions(*position, grid_dimensions)
+            let potential_next_positions = potential_next_positions(position, grid_dimensions)
                 .into_iter()
                 .filter(|(x, y)| !visited_positions.contains(&(*x, *y)))
                 .filter(|(x, y)| {
                     let height_next_postion = height_map[*y][*x];
                     let height_current_position = height_map[position.1][position.0];
-                    height_next_postion <= height_current_position + 1
+
+                    height_next_postion >= height_current_position - 1
                 });
             for new_position in potential_next_positions {
                 next_positions.insert(new_position);
             }
         }
+        step_no += 1;
 
-        for next_position in next_positions.drain() {
-            visited_positions.insert(next_position);
-            current_positions.insert(next_position);
+        for (x, y) in next_positions.drain() {
+            if height_map[y][x] == 'a' as u8 {
+                solution2 = solution2.min(step_no);
+            }
+            visited_positions.insert((x, y));
+            current_positions.insert((x, y));
         }
-        if step_no < max_steps {
-            step_no += 1;
-        } else {
-            return max_steps;
+        /*
+        println!("Step {step_no}");
+        for (y, row) in height_map.iter().enumerate() {
+            for (x, col) in row.iter().enumerate() {
+                if visited_positions.contains(&(x, y)) {
+                    if current_positions.contains(&(x, y)) {
+                        print!(
+                            "{}",
+                            String::from(char::from(col.to_ascii_uppercase())).green()
+                        );
+                    } else {
+                        print!(
+                            "{}",
+                            String::from(char::from(col.to_ascii_uppercase())).blue()
+                        );
+                    }
+                } else {
+                    print!("{}", char::from(*col));
+                }
+            }
+            println!();
         }
+        println!();
+        println!();*/
     }
-    result
+    (solution1, solution2)
 }
 
 fn potential_next_positions(position: (usize, usize), max: (usize, usize)) -> Vec<(usize, usize)> {
@@ -132,6 +159,6 @@ mod tests {
     fn test_input() {
         let (part1, part2) = run("input/12.txt");
         assert_eq!(part1, 425);
-        assert_eq!(part2, 213_159);
+        assert_eq!(part2, 418);
     }
 }

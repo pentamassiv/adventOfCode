@@ -90,23 +90,24 @@ fn main() {
     let (part1, part2) = day12::run("aoc22/input/12.txt");
     println!("  {part1}");
     println!("  {part2}");
+    /*
+
+       println!("Day 13:");
+       let (part1, part2) = day13::run("aoc22/input/13.txt");
+       println!("  {part1}");
+       println!("  {part2}");
     */
 
-    println!("Day 13:");
-    let (part1, part2) = day13::run("aoc22/input/13.txt");
-    println!("  {part1}");
-    println!("  {part2}");
-
-    /*
     println!("Day 14:");
     let (part1, part2) = day14::run("aoc22/input/14.txt");
     println!("  {part1}");
     println!("  {part2}");
-    */
+
 
     println!("Day 15:");
     let part1 = day15::run1("aoc22/input/15.txt", 2_000_000);
     let part2 = day15::run2("aoc22/input/15.txt", 4_000_000, 4_000_000);
     println!("  {part1}");
     println!("  {part2}");
+    */
 }
