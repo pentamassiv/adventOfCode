@@ -1,5 +1,6 @@
 #![warn(clippy::pedantic)]
 #![feature(iter_array_chunks)]
+#![feature(iter_intersperse)]
 
 mod day1;
 mod day10;
@@ -16,9 +17,9 @@ mod day6;
 mod day7;
 mod day8;
 mod day9;
-/*mod day16;
+//mod day16;
 mod day17;
-mod day18;
+/*mod day18;
 mod day19;
 mod day20;
 mod day21;
@@ -109,5 +110,18 @@ fn main() {
     let part2 = day15::run2("aoc22/input/15.txt", 4_000_000, 4_000_000);
     println!("  {part1}");
     println!("  {part2}");
+
+
+
+    println!("Day 16:");
+    let (part1, part2) = day16::run("aoc22/input/16.txt");
+    println!("  {part1}");
+    println!("  {part2}");
+
     */
+
+    println!("Day 17:");
+    let (part1, part2) = day17::run("aoc22/input/17.txt");
+    println!("  {part1}");
+    println!("  {part2}");
 }
