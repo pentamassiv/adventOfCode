@@ -29,6 +29,7 @@ mod day25;
 */
 
 fn main() {
+    /*
     println!("Day 1:");
     let (part1, part2) = day1::run("aoc22/input/1.txt");
     println!("  {part1}");
@@ -84,18 +85,18 @@ fn main() {
     let (part1, part2) = day11::run("aoc22/input/11.txt");
     println!("  {part1}");
     println!("  {part2}");
-    /*
-                   println!("Day 12:");
-                   let (part1, part2) = day12::run("aoc22/input/12.txt");
-                   println!("  {part1}");
-                   println!("  {part2}");
 
-
-       println!("Day 13:");
-       let (part1, part2) = day13::run("aoc22/input/13.txt");
-       println!("  {part1}");
-       println!("  {part2}");
+                       println!("Day 12:");
+                       let (part1, part2) = day12::run("aoc22/input/12.txt");
+                       println!("  {part1}");
+                       println!("  {part2}");
     */
+
+    println!("Day 13:");
+    let (part1, part2) = day13::run("aoc22/input/13.txt");
+    println!("  {part1}");
+    println!("  {part2}");
+
     /*
     println!("Day 10:");
     let (part1, part2) = day10::run("aoc22/input/10.txt");
