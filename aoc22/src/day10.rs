@@ -51,6 +51,7 @@ where
     (solution1, 0)
 }
 
+// These tests have to be ran individually because they both write to the screen and it would be a mess because they run in parallel
 #[cfg(test)]
 mod tests {
     use super::*;

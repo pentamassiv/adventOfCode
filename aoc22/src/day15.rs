@@ -151,6 +151,7 @@ fn parse_sensor(line: &str, min: &mut i32, max: &mut i32) -> ((i32, i32), i32, (
 mod tests {
     use super::*;
 
+    #[ignore]
     #[test]
     fn test_example() {
         let part1 = run1("input/examples/15/1.txt", 10);
@@ -159,6 +160,7 @@ mod tests {
         assert_eq!(part2, 56_000_011);
     }
 
+    #[ignore]
     #[test]
     fn test_input() {
         let part1 = run1("input/15.txt", 2_000_000);

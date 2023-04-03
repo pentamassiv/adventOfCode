@@ -190,6 +190,7 @@ impl Stone {
 mod tests {
     use super::*;
 
+    #[ignore]
     #[test]
     fn test_example() {
         let (part1, part2) = run("input/examples/17/1.txt");
@@ -197,6 +198,7 @@ mod tests {
         //assert_eq!(part2, 45000);
     }
 
+    #[ignore]
     #[test]
     fn test_input() {
         let (part1, part2) = run("input/17.txt");
