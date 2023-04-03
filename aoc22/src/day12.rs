@@ -2,7 +2,9 @@
 
 use std::{collections::HashSet, path::Path};
 
-pub fn run<P>(path: P) -> (i32, i32)
+// use colored::*;
+
+pub fn run<P>(path: P) -> (usize, usize)
 where
     P: AsRef<Path> + std::fmt::Display,
 {
@@ -33,50 +35,94 @@ where
     height_map[start.1][start.0] = 'a' as u8;
     height_map[goal.1][goal.0] = 'z' as u8;
 
+    let (solution1, solution2) = shortest_path(start, goal, &height_map, grid_dimensions);
+    /*let mut solution2 = usize::MAX;
+    for y in 0..grid_dimensions.1 {
+        for x in 0..grid_dimensions.0 {
+            if height_map[y][x] == 'a' as u8 {
+                solution2 = solution2.min(shortest_path(
+                    (x, y),
+                    goal,
+                    &height_map,
+                    grid_dimensions,
+                    solution2,
+                ));
+            }
+        }
+    }*/
+
+    (solution1, solution2)
+}
+
+fn shortest_path(
+    start: (usize, usize),
+    goal: (usize, usize),
+    height_map: &[Vec<u8>],
+    grid_dimensions: (usize, usize),
+) -> (usize, usize) {
     let solution1;
+    let mut solution2 = usize::MAX;
     let mut visited_positions: HashSet<(usize, usize)> = HashSet::new();
     let mut current_positions = HashSet::new();
     let mut next_positions = HashSet::new();
-    current_positions.insert(start);
-    let mut step_no = 1;
+    current_positions.insert(goal);
+    visited_positions.insert(goal);
+    let mut step_no = 0;
 
     'steps: loop {
-        for position in &current_positions {
-            if visited_positions.contains(&goal) {
+        for position in current_positions.drain() {
+            if visited_positions.contains(&start) {
                 solution1 = step_no;
                 break 'steps;
             }
-            for new_position in potential_next_positions(*position, grid_dimensions)
-                .iter()
+            let potential_next_positions = potential_next_positions(position, grid_dimensions)
+                .into_iter()
                 .filter(|(x, y)| !visited_positions.contains(&(*x, *y)))
-                .inspect(|(x, y)| {
-                    println!("a({x},{y}");
-                })
                 .filter(|(x, y)| {
-                    println!("({x}{y})");
-                    println!("({x}{y})");
-                    println!("({x}{y})");
                     let height_next_postion = height_map[*y][*x];
                     let height_current_position = height_map[position.1][position.0];
-                    height_next_postion <= height_current_position + 1
-                })
-                .inspect(|(x, y)| {
-                    println!("b({x},{y}");
-                })
-            {
-                next_positions.insert(*new_position);
+
+                    height_next_postion >= height_current_position - 1
+                });
+            for new_position in potential_next_positions {
+                next_positions.insert(new_position);
             }
-            for (x, y) in &next_positions {
-                visited_positions.insert((*x, *y));
-            }
-        }
-        for next_position in next_positions.drain() {
-            current_positions.insert(next_position);
         }
         step_no += 1;
-    }
 
-    (solution1, 0)
+        for (x, y) in next_positions.drain() {
+            if height_map[y][x] == 'a' as u8 {
+                solution2 = solution2.min(step_no);
+            }
+            visited_positions.insert((x, y));
+            current_positions.insert((x, y));
+        }
+        /*
+        println!("Step {step_no}");
+        for (y, row) in height_map.iter().enumerate() {
+            for (x, col) in row.iter().enumerate() {
+                if visited_positions.contains(&(x, y)) {
+                    if current_positions.contains(&(x, y)) {
+                        print!(
+                            "{}",
+                            String::from(char::from(col.to_ascii_uppercase())).green()
+                        );
+                    } else {
+                        print!(
+                            "{}",
+                            String::from(char::from(col.to_ascii_uppercase())).blue()
+                        );
+                    }
+                } else {
+                    print!("{}", char::from(*col));
+                }
+            }
+            println!();
+        }
+        println!();
+        println!();*/
+    }
+    (solution1, solution2)
 }
 
 fn potential_next_positions(position: (usize, usize), max: (usize, usize)) -> Vec<(usize, usize)> {
@@ -86,10 +132,10 @@ fn potential_next_positions(position: (usize, usize), max: (usize, usize)) -> Ve
     let up = position.1.saturating_sub(1);
     let down = position.1 + 1;
 
-    if right <= max.0 {
+    if right < max.0 {
         next_steps.push((right, position.1));
     }
-    if down <= max.1 {
+    if down < max.1 {
         next_steps.push((position.0, down));
     }
     next_steps.push((left, position.1));
@@ -106,13 +152,13 @@ mod tests {
     fn test_example() {
         let (part1, part2) = run("input/examples/12/1.txt");
         assert_eq!(part1, 31);
-        //assert_eq!(part2, 45000);
+        assert_eq!(part2, 29);
     }
 
     #[test]
     fn test_input() {
         let (part1, part2) = run("input/12.txt");
-        //assert_eq!(part1, 75_622);
-        //assert_eq!(part2, 213_159);
+        assert_eq!(part1, 425);
+        assert_eq!(part2, 418);
     }
 }

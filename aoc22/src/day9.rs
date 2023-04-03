@@ -31,8 +31,6 @@ where
                 print_rope(&nods);
             }
         }
-        println!();
-        println!();
     }
     let solution1 = visited_by_1.len();
     let solution2 = visited_by_9.len();
