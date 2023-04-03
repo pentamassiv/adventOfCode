@@ -2,7 +2,7 @@
 
 use std::{collections::HashSet, path::Path};
 
-use colored::*;
+// use colored::*;
 
 pub fn run<P>(path: P) -> (usize, usize)
 where
