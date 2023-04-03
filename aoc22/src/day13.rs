@@ -2,7 +2,7 @@
 use std::cmp::Ordering;
 use std::{path::Path, str::Chars};
 
-pub fn run<P>(path: P) -> (usize, i32)
+pub fn run<P>(path: P) -> (usize, usize)
 where
     P: AsRef<Path> + std::fmt::Display,
 {
@@ -23,15 +23,29 @@ where
         .enumerate()
         .filter_map(|(no, [first, second])| {
             if cmp(&mut first.chars(), &mut second.chars()) == Ordering::Less {
-                println!(" {}", no + 1);
                 Some(no + 1)
             } else {
-                println!();
                 None
             }
         })
         .sum();
-    (solution1, 0)
+    let mut all_packets = input.lines().filter(|l| !l.is_empty()).collect::<Vec<_>>();
+    all_packets.push("[[2]]");
+    all_packets.push("[[6]]");
+    all_packets.sort_by(|a, b| cmp(&mut a.chars(), &mut b.chars()));
+    let solution2 = all_packets
+        .iter()
+        .enumerate()
+        .filter_map(|(no, &x)| {
+            if x == "[[2]]" || x == "[[6]]" {
+                Some(no + 1)
+            } else {
+                None
+            }
+        })
+        .product();
+
+    (solution1, solution2)
 }
 
 fn cmp(first: &mut Chars, second: &mut Chars) -> Ordering {
@@ -41,7 +55,6 @@ fn cmp(first: &mut Chars, second: &mut Chars) -> Ordering {
     loop {
         let Some(mut first_c) = first.next() else { return Ordering::Less};
         let Some(mut second_c) = second.next() else { return Ordering::Greater};
-        println!("{first_c} {second_c}");
         if first_c == second_c {
             continue;
         }
@@ -53,17 +66,6 @@ fn cmp(first: &mut Chars, second: &mut Chars) -> Ordering {
             return Ordering::Greater;
         }
 
-        /*  if wrapped.0 {
-            wrapped.0 = false;
-            first_c = first.next().unwrap();
-        }
-        if wrapped.1 {
-            wrapped.1 = false;
-            second_c = second.next().unwrap();
-        }
-        */
-
-        //while let Some(digit) = first.next_if(|&x| x == '[') {
         while first_c == '[' {
             wrapped.0 += 1;
             first_c = first.next().unwrap();
@@ -72,15 +74,6 @@ fn cmp(first: &mut Chars, second: &mut Chars) -> Ordering {
             wrapped.1 += 1;
             second_c = second.next().unwrap();
         }
-
-        /*  if first_c == '[' {
-            wrapped.0 = true;
-            first_c = first.next().unwrap();
-        }
-        if second_c == '[' {
-            wrapped.1 = true;
-            second_c = second.next().unwrap();
-        }*/
 
         let  Some(mut first_value) = first_c.to_digit(10)else {return Ordering::Less;};
         let  Some(mut second_value) = second_c.to_digit(10)else {return Ordering::Greater;};
@@ -126,15 +119,15 @@ mod tests {
     fn test_example() {
         let (part1, part2) = run("input/examples/13/1.txt");
         assert_eq!(part1, 13);
-        //assert_eq!(part2, 45000);
+        assert_eq!(part2, 140);
     }
 
     #[test]
     fn test_input() {
         let (part1, part2) = run("input/13.txt");
-        println!("{part1}");
+        //println!("{part1}");
         assert_eq!(part1, 5808);
-        //assert_eq!(part2, 213_159);
+        assert_eq!(part2, 22_713);
     }
 
     #[test]
@@ -179,8 +172,6 @@ mod tests {
         let mut right = "[[[],[]],[[[8,4],[5,5,9,9],[1,9,1,8],0]]]".chars();
         assert_eq!(cmp(&mut left, &mut right), Ordering::Greater);
 
-        println!();
-        println!();
         let mut left =
             "[[[[9],[8]],[6,3,4],5],[[6,3],[7],[[5,10]],10],[],[3,5,[3,0,[0,3,3]],8,[]]]".chars();
         let mut right = "[[3,[10,10],4],[8,[[7,1,0,6]],1],[8,[[5,0,7,4],[1,4],1],5,[[7,1],[2],[0,9,5,7,5]]],[[5,[6,3],[0,8,3,2],10,[10]]]]".chars();
@@ -199,27 +190,3 @@ mod tests {
         assert_eq!(cmp(&mut left, &mut right), Ordering::Greater);
     }
 }
-
-/*
-[[8,6,4,[2,5,0,[8,6,8],4],[[1],[5]]],[0,[2]],[],[5,[],[5,4,[10,9,4],9,6]]]
-[[[[5,10,3],6,[2],[]],[[8,1,7,7,10],0,[6,8,9,3,9],[10,5,4],[9]],[[]],[[6,1,4,3,9],[10,9,9]],8],[9,7,6,[[3,8,0,1,1],1],8]]
-
-[8,6,4,[2,5,0,[8,6,8],4],[[1],[5]]]
-[[[5,10,3],6,[2],[]],[[8,1,7,7,10],0,[6,8,9,3,9],[10,5,4],[9]],[[]],[[6,1,4,3,9],[10,9,9]],8]
-
-8
-[[5,10,3],6,[2],[]]
-
-
-[8]
-[[5,10,3],6,[2],[]]
-
-8
-[5,10,3]
-
-[8]
-[5,10,3]
-
-8
-5
-*/
