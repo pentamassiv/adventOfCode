@@ -2,7 +2,6 @@
 #![allow(clippy::missing_panics_doc)]
 #![feature(iter_array_chunks)]
 #![feature(iter_intersperse)]
-#![feature(hash_drain_filter)]
 
 pub mod day1;
 pub mod day10;
@@ -11,7 +10,7 @@ pub mod day12;
 pub mod day13;
 pub mod day14;
 pub mod day15;
-pub mod day16;
+//pub mod day16;
 pub mod day17;
 pub mod day2;
 pub mod day3;
