@@ -23,7 +23,7 @@ where
         .intersperse(Direction::Down)
         .cycle();
 
-    let shape_order = vec![
+    let shape_order = [
         Shape::HLine,
         Shape::Plus,
         Shape::InvertL,
@@ -51,7 +51,7 @@ where
             } else {
                 println!("v");
             }*/
-            if !stone.move_stone(&tower, stone.next_position(&direction))
+            if !stone.move_stone(&tower, stone.next_position(direction))
                 && direction == Direction::Down
             {
                 break;
@@ -65,7 +65,7 @@ where
                 if tower[tower.len() - y][x] {
                     print!("#");
                 } else {
-                    print!(".")
+                    print!(".");
                 }
             }
             println!("|");
@@ -148,7 +148,7 @@ impl Stone {
     }
 
     // Calculates the next position of a rock
-    fn next_position(&self, direction: &Direction) -> Vec<(usize, usize)> {
+    fn next_position(&self, direction: Direction) -> Vec<(usize, usize)> {
         let mut next_position = vec![];
         for (x, y) in &self.location {
             match direction {

@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+#[must_use]
 pub fn run(path: &str) -> (u32, u32) {
     // Read the input file
     let input = std::fs::read_to_string(path).unwrap();

@@ -53,8 +53,12 @@ fn cmp(first: &mut Chars, second: &mut Chars) -> Ordering {
     let mut second = second.peekable();
     let mut wrapped = (0, 0);
     loop {
-        let Some(mut first_c) = first.next() else { return Ordering::Less};
-        let Some(mut second_c) = second.next() else { return Ordering::Greater};
+        let Some(mut first_c) = first.next() else {
+            return Ordering::Less;
+        };
+        let Some(mut second_c) = second.next() else {
+            return Ordering::Greater;
+        };
         if first_c == second_c {
             continue;
         }
@@ -75,38 +79,39 @@ fn cmp(first: &mut Chars, second: &mut Chars) -> Ordering {
             second_c = second.next().unwrap();
         }
 
-        let  Some(mut first_value) = first_c.to_digit(10)else {return Ordering::Less;};
-        let  Some(mut second_value) = second_c.to_digit(10)else {return Ordering::Greater;};
+        let Some(mut first_value) = first_c.to_digit(10) else {
+            return Ordering::Less;
+        };
+        let Some(mut second_value) = second_c.to_digit(10) else {
+            return Ordering::Greater;
+        };
 
-        while let Some(digit) = first.next_if(|x| x.is_digit(10)) {
+        while let Some(digit) = first.next_if(char::is_ascii_digit) {
             first_value *= 10;
             first_value += digit.to_digit(10).unwrap();
         }
 
-        while let Some(digit) = second.next_if(|x| x.is_digit(10)) {
+        while let Some(digit) = second.next_if(char::is_ascii_digit) {
             second_value *= 10;
             second_value += digit.to_digit(10).unwrap();
         }
 
-        if first_value < second_value {
-            return Ordering::Less;
-        } else if first_value > second_value {
+        let comparison = first_value.cmp(&second_value);
+        if comparison != Ordering::Equal {
+            return comparison;
+        }
+        while first.next_if(|&x| wrapped.0 > 0 && x == ']').is_some() {
+            wrapped.0 -= 1;
+        }
+        if wrapped.0 > 0 {
             return Ordering::Greater;
-        } else {
-            while let Some(_) = first.next_if(|&x| wrapped.0 > 0 && x == ']') {
-                wrapped.0 -= 1;
-            }
-            if wrapped.0 > 0 {
-                return Ordering::Greater;
-            }
+        }
 
-            while let Some(_) = second.next_if(|&x| wrapped.1 > 0 && x == ']') {
-                wrapped.1 -= 1;
-            }
-            if wrapped.1 > 0 {
-                return Ordering::Less;
-            }
-            continue;
+        while second.next_if(|&x| wrapped.1 > 0 && x == ']').is_some() {
+            wrapped.1 -= 1;
+        }
+        if wrapped.1 > 0 {
+            return Ordering::Less;
         }
     }
 }

@@ -1,3 +1,4 @@
+#[must_use]
 pub fn run(path: &str) -> (i32, i32) {
     // Read the input file
     let input = std::fs::read_to_string(path).unwrap();

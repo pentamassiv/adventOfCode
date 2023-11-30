@@ -2,6 +2,7 @@ use std::collections::VecDeque;
 use std::fs::File;
 use std::io::{self, BufRead};
 
+#[must_use]
 pub fn run(path: &str) -> (String, String) {
     let debug = false; // Activate debug print statements
 

@@ -2,6 +2,7 @@
 #![allow(clippy::missing_panics_doc)]
 #![feature(iter_array_chunks)]
 #![feature(iter_intersperse)]
+#![allow(clippy::range_plus_one)]
 
 pub mod day1;
 pub mod day10;

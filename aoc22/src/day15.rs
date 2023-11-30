@@ -97,17 +97,17 @@ where
         // Check if the gap is at the beginning of the row
         if merged_ranges[0].start <= 0 && merged_ranges[0].end < max_width {
             println!("x: {}, y: {}", merged_ranges[0].end, row_idx);
-            return 4000000 * merged_ranges[0].end as usize + row_idx as usize;
+            return 4_000_000 * merged_ranges[0].end as usize + row_idx as usize;
         }
         // Check if the gap is at the end of the row
         if merged_ranges[0].start > 0 && merged_ranges[0].end >= max_width {
             println!("x: {}, y: {}", merged_ranges[0].start, row_idx);
-            return 4000000 * merged_ranges[0].start as usize + row_idx as usize;
+            return 4_000_000 * merged_ranges[0].start as usize + row_idx as usize;
         }
         // Check if the gap is somewhere in the middle of the row
         if merged_ranges.len() > 1 {
             println!("x: {}, y: {}", merged_ranges[0].end, row_idx);
-            return 4000000 * merged_ranges[0].end as usize + row_idx as usize;
+            return 4_000_000 * merged_ranges[0].end as usize + row_idx as usize;
         }
     }
     panic!("No empty space was found");

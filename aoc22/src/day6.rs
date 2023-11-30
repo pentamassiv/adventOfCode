@@ -1,5 +1,6 @@
 use std::collections::HashSet;
 
+#[must_use]
 pub fn run(path: &str) -> (usize, usize) {
     // Read the input file
     let input = std::fs::read_to_string(path).unwrap();
