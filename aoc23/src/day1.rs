@@ -12,8 +12,8 @@ where
         std::fs::read_to_string(format!("aoc23/{path}")).unwrap()
     };
 
-    let re = Regex::new(&r"[[:digit:]]|one|two|three|four|five|six|seven|eight|nine").unwrap();
-    let re_rev = Regex::new(&r"[[:digit:]]|eno|owt|eerht|ruof|evif|xis|neves|thgie|enin").unwrap();
+    let re = Regex::new(r"[[:digit:]]|one|two|three|four|five|six|seven|eight|nine").unwrap();
+    let re_rev = Regex::new(r"[[:digit:]]|eno|owt|eerht|ruof|evif|xis|neves|thgie|enin").unwrap();
 
     // Read the input file
     input
@@ -22,16 +22,14 @@ where
             let l_rev: String = l.chars().rev().collect();
             (
                 l.chars()
-                    .filter(char::is_ascii_digit)
-                    .next()
+                    .find(char::is_ascii_digit)
                     .unwrap_or('0')
                     .to_digit(10)
                     .unwrap()
                     * 10
                     + l_rev
                         .chars()
-                        .filter(char::is_ascii_digit)
-                        .next()
+                        .find(char::is_ascii_digit)
                         .unwrap_or('0')
                         .to_digit(10)
                         .unwrap(),
@@ -44,33 +42,15 @@ where
 
 fn parse_str(input: &str) -> u32 {
     match input {
-        "1" => 1,
-        "2" => 2,
-        "3" => 3,
-        "4" => 4,
-        "5" => 5,
-        "6" => 6,
-        "7" => 7,
-        "8" => 8,
-        "9" => 9,
-        "one" => 1,
-        "two" => 2,
-        "three" => 3,
-        "four" => 4,
-        "five" => 5,
-        "six" => 6,
-        "seven" => 7,
-        "eight" => 8,
-        "nine" => 9,
-        "eno" => 1,
-        "owt" => 2,
-        "eerht" => 3,
-        "ruof" => 4,
-        "evif" => 5,
-        "xis" => 6,
-        "neves" => 7,
-        "thgie" => 8,
-        "enin" => 9,
+        "1" | "one" | "eno" => 1,
+        "2" | "two" | "owt" => 2,
+        "3" | "three" | "eerht" => 3,
+        "4" | "four" | "ruof" => 4,
+        "5" | "five" | "evif" => 5,
+        "6" | "six" | "xis" => 6,
+        "7" | "seven" | "neves" => 7,
+        "8" | "eight" | "thgie" => 8,
+        "9" | "nine" | "enin" => 9,
         _ => {
             panic!("unable to parse str")
         }
