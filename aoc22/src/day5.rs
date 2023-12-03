@@ -8,7 +8,7 @@ pub fn run(path: &str) -> (String, String) {
 
     let mut lines = io::BufReader::new(File::open(path).unwrap())
         .lines()
-        .flatten()
+        .map_while(Result::ok)
         .peekable();
 
     let mut stacks = vec![];
@@ -37,7 +37,7 @@ pub fn run(path: &str) -> (String, String) {
     // Move the crates
     let lines = io::BufReader::new(File::open(path).unwrap())
         .lines()
-        .flatten()
+        .map_while(Result::ok)
         .skip(end_start_config + 2);
 
     let mut mover_9001 = vec![];

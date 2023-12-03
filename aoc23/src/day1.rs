@@ -63,9 +63,9 @@ mod tests {
 
     #[test]
     fn test_re() {
-        let re = Regex::new(&r"[[:digit:]]|one|two|three|four|five|six|seven|eight|nine").unwrap();
+        let re = Regex::new(r"[[:digit:]]|one|two|three|four|five|six|seven|eight|nine").unwrap();
         let re_rev =
-            Regex::new(&r"[[:digit:]]|eno|owt|eerht|ruof|evif|xis|neves|thgie|enin").unwrap();
+            Regex::new(r"[[:digit:]]|eno|owt|eerht|ruof|evif|xis|neves|thgie|enin").unwrap();
 
         let l = "qzjggk1one";
         let l_rev: String = l.chars().rev().collect();
