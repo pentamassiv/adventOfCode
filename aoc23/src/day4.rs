@@ -38,8 +38,6 @@ where
             numbers_you_have
                 .filter(move |n| winning_numbers.contains(n))
                 .count()
-                .try_into()
-                .unwrap()
         })
         // Keep track of the number of copies
         .inspect(|&c| {

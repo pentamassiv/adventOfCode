@@ -22,7 +22,7 @@ where
     let mut sources_part2 = vec![];
     for i in (0..sources_part1.len()).step_by(2) {
         let seed_start = sources_part1[i];
-        for j in 1..sources_part1[i as usize + 1 as usize] {
+        for j in 1..sources_part1[i + 1] {
             sources_part2.push(seed_start + j);
         }
     }
@@ -51,11 +51,11 @@ where
                 .collect::<Vec<_>>();
 
             let difference = dest - source;
-            for e in mapped_1.iter_mut() {
-                *e = *e + difference
+            for e in &mut mapped_1 {
+                *e += difference;
             }
-            for e in mapped_2.iter_mut() {
-                *e = *e + difference
+            for e in &mut mapped_2 {
+                *e += difference;
             }
 
             destinations_1.append(&mut mapped_1);
