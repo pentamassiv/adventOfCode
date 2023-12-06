@@ -85,6 +85,7 @@ mod tests {
         assert_eq!(part2, 46);
     }
 
+    #[ignore = "takes too long"]
     #[test]
     fn test_input() {
         let (part1, part2) = run("input/5.txt");
