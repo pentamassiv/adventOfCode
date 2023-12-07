@@ -76,19 +76,3 @@ mod tests {
         assert_eq!(part2, 34_788_142);
     }
 }
-
-/*
-
-s < v * t
-s < w * (t-w)
-s < tw - w²
-0 < -w² +tw - s
-0 > w² -tw + s
-
- t/2 - root(t²/4 - s)< x < t/2 + root(t²/4 - s)
-
-s=9 t=7:    7/2 - root(7²/4 - 9)< x < 7/2 + root(7²/4 - 9)
-
-
-
-*/
