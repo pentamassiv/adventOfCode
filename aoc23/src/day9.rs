@@ -1,6 +1,6 @@
 use std::path::Path;
 
-pub fn run<P>(path: P) -> (isize, usize)
+pub fn run<P>(path: P) -> (isize, isize)
 where
     P: AsRef<Path> + std::fmt::Display,
 {
@@ -26,9 +26,9 @@ where
     diffs.shrink_to_fit();
 
     let mut part1 = 0;
+    let mut part2 = 0;
     input.lines().for_each(|l| {
         l.split_ascii_whitespace()
-            // .inspect(|i| print!("{i}"))
             .map(|i| i.parse::<isize>().unwrap())
             .enumerate()
             .for_each(|(i, v)| diffs[0][i] = v);
@@ -37,13 +37,20 @@ where
 
         part1 += diffs
             .iter()
-            .map(|v| v.last().unwrap())
             .take(last_row)
+            .map(|v| v.last().unwrap())
+            .sum::<isize>();
+
+        part2 += diffs
+            .iter()
+            .take(last_row)
+            .map(|v| v.first().unwrap())
+            .enumerate()
+            .map(|(i, v)| ((-1_isize).pow((i).try_into().unwrap())) * v)
             .sum::<isize>();
     });
 
-    print!("");
-    (part1, 0)
+    (part1, part2)
 }
 
 fn calc_diffs(input: &mut [Vec<isize>]) -> usize {
@@ -73,6 +80,6 @@ mod tests {
     fn test_input() {
         let (part1, part2) = run("input/9.txt");
         assert_eq!(part1, 2_008_960_228);
-        assert_eq!(part2, 246_894_760);
+        assert_eq!(part2, 1_097);
     }
 }
