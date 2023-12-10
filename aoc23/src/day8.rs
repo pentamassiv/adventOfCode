@@ -1,4 +1,7 @@
-use std::path::Path;
+use std::{
+    collections::{HashMap, HashSet},
+    path::Path,
+};
 
 pub fn run<P>(path: P) -> (usize, usize)
 where
@@ -50,10 +53,8 @@ where
     let mut current_node;
     let mut next_node;
     let mut direction;
-
-    for _ in 0..part2_current_nodes.len() - 1 {
-        part2_current_nodes.pop();
-    }
+    let mut visited_nodes: Vec<HashSet<(usize, bool)>> =
+        vec![HashSet::new(); part2_current_nodes.len()];
 
     while !all_at_end_nodes {
         part2 += 1;
@@ -74,6 +75,7 @@ where
                 'R' => nodes[current_node].1,
                 _ => panic!("the directions must only contain L and R"),
             };
+            visited_nodes[j].insert((next_node, nodes[next_node].2));
             if all_at_end_nodes {
                 all_at_end_nodes = nodes[next_node].2;
             }
