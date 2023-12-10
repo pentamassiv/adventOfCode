@@ -1,6 +1,6 @@
-use std::path::Path;
+use std::{collections::HashSet, path::Path};
 
-pub fn run<P>(path: P) -> (isize, isize)
+pub fn run<P>(path: P) -> (usize, usize)
 where
     P: AsRef<Path> + std::fmt::Display,
 {
@@ -49,22 +49,63 @@ where
         }
     }
     let mut part1 = 1;
+    let mut path = HashSet::new();
     'for_loop: for next_step in possible_starts {
         let mut pipe = Pipe {
             current_pos: next_step,
             previous_pos: maze.start,
         };
+        path.insert(pipe.current_pos);
 
         part1 = 1;
         while maze.follow(&mut pipe) {
             part1 += 1;
+            path.insert(pipe.current_pos);
             if pipe.current_pos == maze.start {
                 break 'for_loop;
             }
         }
     }
-    print!("");
-    (part1 / 2, 0)
+
+    let mut part2 = 0;
+    let mut inside;
+    let mut last_border = None;
+    for w in 0..maze.width {
+        inside = false;
+        for h in 0..maze.height {
+            if path.contains(&(w, h)) {
+                check_if_inside(&mut inside, &mut last_border, maze.tile((w, h)));
+            } else if inside {
+                part2 += 1;
+            }
+        }
+    }
+
+    (part1 / 2, part2)
+}
+
+fn check_if_inside(inside: &mut bool, last_border: &mut Option<char>, c: char) {
+    match c {
+        '|' | 'S' => (),
+        '-' => {
+            *inside = !*inside;
+        }
+        '7' => {
+            *last_border = Some('7');
+        }
+        'F' => {
+            *last_border = Some('F');
+        }
+        'L' if last_border.unwrap() == '7' => {
+            *inside = !*inside;
+        }
+        'L' if last_border.unwrap() == 'F' => {}
+        'J' if last_border.unwrap() == '7' => {}
+        'J' if last_border.unwrap() == 'F' => {
+            *inside = !*inside;
+        }
+        _ => panic!("the path cannot contain any other chars"),
+    };
 }
 
 struct Maze {
@@ -170,20 +211,48 @@ mod tests {
     fn test_example1() {
         let (part1, part2) = run("input/examples/10/1.txt");
         assert_eq!(part1, 4);
-        assert_eq!(part2, 4);
+        assert_eq!(part2, 1);
     }
 
     #[test]
     fn test_example2() {
         let (part1, part2) = run("input/examples/10/2.txt");
         assert_eq!(part1, 8);
+        assert_eq!(part2, 1);
+    }
+
+    #[test]
+    fn test_example3() {
+        let (part1, part2) = run("input/examples/10/3.txt");
+        assert_eq!(part1, 23);
         assert_eq!(part2, 4);
+    }
+
+    #[test]
+    fn test_example4() {
+        let (part1, part2) = run("input/examples/10/4.txt");
+        assert_eq!(part1, 22);
+        assert_eq!(part2, 4);
+    }
+
+    #[test]
+    fn test_example5() {
+        let (part1, part2) = run("input/examples/10/5.txt");
+        assert_eq!(part1, 70);
+        assert_eq!(part2, 8);
+    }
+
+    #[test]
+    fn test_example6() {
+        let (part1, part2) = run("input/examples/10/6.txt");
+        assert_eq!(part1, 80);
+        assert_eq!(part2, 10);
     }
 
     #[test]
     fn test_input() {
         let (part1, part2) = run("input/10.txt");
         assert_eq!(part1, 6_640);
-        assert_eq!(part2, 1_097);
+        assert_eq!(part2, 411);
     }
 }
